@@ -15,12 +15,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_CREATE_INVENTORY_TABLE = "CREATE TABLE " + Contract.Product.TABLE_NAME + "("
-                + Contract.Product.id + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                Contract.Product.productName + " TEXT, " +
-                Contract.Product.price + " INTEGER, " +
-                Contract.Product.quantity + " INTEGER, " +
-                Contract.Product.supplierName + " TEXT, " +
-                Contract.Product.supplierPhoneNumber + " TEXT);";
+                + Contract.Product.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                Contract.Product.PRODUCT_NAME + " TEXT, " +
+                Contract.Product.PRICE + " INTEGER, " +
+                Contract.Product.QUANTITY + " INTEGER, " +
+                Contract.Product.SUPPLIER_NAME + " TEXT, " +
+                Contract.Product.SUPPLIER_PHONE_NUMBER + " TEXT);";
         db.execSQL(SQL_CREATE_INVENTORY_TABLE);
     }
 

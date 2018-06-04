@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.theeagle.inventory.R;
 import com.example.theeagle.inventory.data.Contract.Product;
 import com.example.theeagle.inventory.data.DatabaseHelper;
+
 public class MainActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper = new DatabaseHelper(this);
     private TextView textView;
@@ -21,6 +22,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         displayData();
     }
 
@@ -31,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
     private void displayData() {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         String[] projection = {
-                Product.id,
-                Product.productName,
-                Product.price,
-                Product.quantity,
-                Product.supplierName,
-                Product.supplierPhoneNumber
+                Product.ID,
+                Product.PRODUCT_NAME,
+                Product.PRICE,
+                Product.QUANTITY,
+                Product.SUPPLIER_NAME,
+                Product.SUPPLIER_PHONE_NUMBER
         };
         Cursor cursor = database.query(Product.TABLE_NAME,
                 projection,
@@ -45,22 +51,43 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null,
                 null);
-        if (cursor.getCount()!=0){
-        textView.setText(String.format(getString(R.string.container),cursor.getCount()));}
-        else {
+        if (cursor.getCount() != 0) {
+            textView.setText(String.format(getString(R.string.container), cursor.getCount()));
+            try {
+                int idColumnIndex = cursor.getColumnIndex(Product.ID);
+                int productNameColumnIndex = cursor.getColumnIndex(Product.PRODUCT_NAME);
+                int priceColumnIndex = cursor.getColumnIndex(Product.PRICE);
+                int quantityColumnIndex = cursor.getColumnIndex(Product.QUANTITY);
+                int supplierNameColumnIndex = cursor.getColumnIndex(Product.SUPPLIER_NAME);
+                int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(Product.SUPPLIER_PHONE_NUMBER);
+                while (cursor.moveToNext()) {
+                    int productId = cursor.getInt(idColumnIndex);
+                    String productName = cursor.getString(productNameColumnIndex);
+                    int price = cursor.getInt(priceColumnIndex);
+                    int quantity = cursor.getInt(quantityColumnIndex);
+                    String supplierName = cursor.getString(supplierNameColumnIndex);
+                    String supplierPhoneNumber = cursor.getString(supplierPhoneNumberColumnIndex);
+                    textView.append("ID =" + productId + "name= " + productName + "PRICE =" + price +
+                            "QUANTITY= " + quantity + "SUPPLIER_NAME= " + supplierName +
+                            "SUPPLIER_PHONE_NUMBER= " + supplierPhoneNumber + "\n");
+                }
+
+            } finally {
+                cursor.close();
+            }
+        } else {
             textView.setText(R.string.empty_state);
         }
-        cursor.close();
     }
 
     private void insertProduct() {
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(Product.productName, "LapTop");
-        values.put(Product.price, 1000);
-        values.put(Product.quantity, 11);
-        values.put(Product.supplierName, "Apple");
-        values.put(Product.supplierPhoneNumber, "0125120235");
+        values.put(Product.PRODUCT_NAME, "LapTop");
+        values.put(Product.PRICE, 1000);
+        values.put(Product.QUANTITY, 11);
+        values.put(Product.SUPPLIER_NAME, "Apple");
+        values.put(Product.SUPPLIER_PHONE_NUMBER, "0125120235");
         database.insert(Product.TABLE_NAME, null, values);
     }
 
@@ -75,4 +102,6 @@ public class MainActivity extends AppCompatActivity {
         insertProduct();
         return super.onOptionsItemSelected(item);
     }
+
+
 }
