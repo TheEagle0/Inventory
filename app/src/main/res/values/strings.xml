@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Inventory</string>
+    <string name="insert_dummy">Insert Dummy</string>
+    <string name="container">this table contains %1$d elements</string>
+    <string name="empty_state">The Table is Empty</string>
 </resources>
