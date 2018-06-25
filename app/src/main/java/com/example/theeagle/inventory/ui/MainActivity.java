@@ -3,12 +3,13 @@ package com.example.theeagle.inventory.ui;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.example.theeagle.inventory.R;
 import com.example.theeagle.inventory.data.Contract.Product;
 import com.example.theeagle.inventory.data.DatabaseHelper;
@@ -81,14 +82,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void insertProduct() {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(Product.PRODUCT_NAME, "LapTop");
         values.put(Product.PRICE, 1000);
         values.put(Product.QUANTITY, 11);
         values.put(Product.SUPPLIER_NAME, "Apple");
         values.put(Product.SUPPLIER_PHONE_NUMBER, "0125120235");
-        database.insert(Product.TABLE_NAME, null, values);
+        Uri newUri = getContentResolver().insert(Product.CONTENT_URI, values);
+        if (newUri == null) {
+            Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+        }
+        Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
     }
 
     @Override
