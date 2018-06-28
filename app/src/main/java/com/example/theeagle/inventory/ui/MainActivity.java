@@ -1,28 +1,35 @@
 package com.example.theeagle.inventory.ui;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.theeagle.inventory.R;
 import com.example.theeagle.inventory.data.Contract.Product;
 import com.example.theeagle.inventory.data.DatabaseHelper;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private DatabaseHelper databaseHelper = new DatabaseHelper(this);
     private TextView textView;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
+        listeners();
+
     }
 
     @Override
@@ -33,6 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         textView = findViewById(R.id.text_view);
+        floatingActionButton = findViewById(R.id.floating_btn);
+    }
+
+    private void listeners() {
+        floatingActionButton.setOnClickListener(this);
     }
 
     private void displayData() {
@@ -108,4 +120,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.floating_btn:
+                startActivity(new Intent(this, EditorActivity.class));
+        }
+    }
 }

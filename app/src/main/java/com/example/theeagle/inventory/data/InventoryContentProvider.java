@@ -53,7 +53,16 @@ public class InventoryContentProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCT:
+                return Contract.Product.CONTENT_LIST_TYPE;
+            case PRODUCT_ID:
+                return Contract.Product.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
     }
 
     @Nullable
@@ -115,7 +124,7 @@ public class InventoryContentProvider extends ContentProvider {
         return ContentUris.withAppendedId(uri, id);
     }
 
-    private int updateProduct(Uri uri,ContentValues contentValues, String selection, String[] selectionArgs) {
+    private int updateProduct(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
         if (contentValues.containsKey(Contract.Product.PRODUCT_NAME)) {
             String productName = contentValues.getAsString(Contract.Product.PRODUCT_NAME);
             if (productName == null) {
@@ -153,6 +162,5 @@ public class InventoryContentProvider extends ContentProvider {
 
         return database.update(Contract.Product.TABLE_NAME, contentValues, selection, selectionArgs);
     }
-
 
 }

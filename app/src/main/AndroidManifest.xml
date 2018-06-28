@@ -16,10 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:authorities="com.example.theeagle.inventory"
             android:name=".data.InventoryContentProvider"
-            android:exported="true"/>
+            android:authorities="com.example.theeagle.inventory"
+            android:exported="true" />
+
+        <activity android:name=".ui.EditorActivity"></activity>
     </application>
 
 </manifest>
