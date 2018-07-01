@@ -47,6 +47,7 @@ public class InventoryContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown uri" + uri);
         }
+        cursor.setNotificationUri(getContext().getContentResolver(),uri);
         return cursor;
     }
 
@@ -121,6 +122,7 @@ public class InventoryContentProvider extends ContentProvider {
         if (id == -1) {
             return null;
         }
+        getContext().getContentResolver().notifyChange(uri,null);
         return ContentUris.withAppendedId(uri, id);
     }
 

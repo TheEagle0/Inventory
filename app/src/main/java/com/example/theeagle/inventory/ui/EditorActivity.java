@@ -1,15 +1,14 @@
 package com.example.theeagle.inventory.ui;
 
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-
 import com.example.theeagle.inventory.R;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
-    private EditText productName, price, quantity, supplierName, supplierPhoneNumber;
+    private TextInputEditText productName, price, quantity, supplierName, supplierPhoneNumber;
     private Button addInfo;
 
     @Override
