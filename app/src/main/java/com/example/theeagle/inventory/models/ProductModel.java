@@ -3,7 +3,8 @@ package com.example.theeagle.inventory.models;
 public class ProductModel {
 
     private String ProductName, supplierName, phoneNumber;
-    private int price, quantity;
+    private int  quantity;
+    private double price;
 
     public ProductModel() {
     }
@@ -32,11 +33,11 @@ public class ProductModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public int getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 

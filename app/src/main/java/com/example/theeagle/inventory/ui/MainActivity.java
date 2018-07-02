@@ -23,14 +23,12 @@ import android.widget.Toast;
 import com.example.theeagle.inventory.R;
 import com.example.theeagle.inventory.adapter.InventoryAdapter;
 import com.example.theeagle.inventory.data.Contract.Product;
-import com.example.theeagle.inventory.data.DatabaseHelper;
 import com.example.theeagle.inventory.models.ProductModel;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 0;
-    private DatabaseHelper databaseHelper = new DatabaseHelper(this);
     String[] projection = {
             Product.ID,
             Product.PRODUCT_NAME,
@@ -71,57 +69,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void listeners() {
         floatingActionButton.setOnClickListener(this);
     }
-//
-//    private void displayData() {
-//        SQLiteDatabase database = databaseHelper.getReadableDatabase();
-//        String[] projection = {
-//                Product.ID,
-//                Product.PRODUCT_NAME,
-//                Product.PRICE,
-//                Product.QUANTITY,
-//                Product.SUPPLIER_NAME,
-//                Product.SUPPLIER_PHONE_NUMBER
-//        };
-//        Cursor cursor = database.query(Product.TABLE_NAME,
-//                projection,
-//                null,
-//                null,
-//                null,
-//                null,
-//                null);
-//        if (cursor.getCount() != 0) {
-//            textView.setText(String.format(getString(R.string.container), cursor.getCount()));
-//            try {
-//                int idColumnIndex = cursor.getColumnIndex(Product.ID);
-//                int productNameColumnIndex = cursor.getColumnIndex(Product.PRODUCT_NAME);
-//                int priceColumnIndex = cursor.getColumnIndex(Product.PRICE);
-//                int quantityColumnIndex = cursor.getColumnIndex(Product.QUANTITY);
-//                int supplierNameColumnIndex = cursor.getColumnIndex(Product.SUPPLIER_NAME);
-//                int supplierPhoneNumberColumnIndex = cursor.getColumnIndex(Product.SUPPLIER_PHONE_NUMBER);
-//                while (cursor.moveToNext()) {
-//                    int productId = cursor.getInt(idColumnIndex);
-//                    String productName = cursor.getString(productNameColumnIndex);
-//                    int price = cursor.getInt(priceColumnIndex);
-//                    int quantity = cursor.getInt(quantityColumnIndex);
-//                    String supplierName = cursor.getString(supplierNameColumnIndex);
-//                    String supplierPhoneNumber = cursor.getString(supplierPhoneNumberColumnIndex);
-//                    textView.append("ID =" + productId + "name= " + productName + "PRICE =" + price +
-//                            "QUANTITY= " + quantity + "SUPPLIER_NAME= " + supplierName +
-//                            "SUPPLIER_PHONE_NUMBER= " + supplierPhoneNumber + "\n");
-//                }
-//
-//            } finally {
-//                cursor.close();
-//            }
-//        } else {
-//            textView.setText(R.string.empty_state);
-//        }
-//    }
 
     private void insertProduct() {
         ContentValues values = new ContentValues();
         values.put(Product.PRODUCT_NAME, "LapTop");
-        values.put(Product.PRICE, 1000);
+        values.put(Product.PRICE, 1000.20);
         values.put(Product.QUANTITY, 11);
         values.put(Product.SUPPLIER_NAME, "Apple");
         values.put(Product.SUPPLIER_PHONE_NUMBER, "0125120235");
@@ -182,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int supplierPhone = cursor.getColumnIndexOrThrow(Product.SUPPLIER_PHONE_NUMBER);
 
                 productModel.setProductName(cursor.getString(productName));
-                productModel.setPrice(cursor.getInt(price));
+                productModel.setPrice(cursor.getDouble(price));
                 productModel.setQuantity(cursor.getInt(quantity));
                 productModel.setSupplierName(cursor.getString(supplierName));
                 productModel.setPhoneNumber(cursor.getString(supplierPhone));
