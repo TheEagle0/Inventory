@@ -11,4 +11,5 @@
     <string name="add">add</string>
     <string name="remove_btn">remove btn</string>
     <string name="add_btn">add btn</string>
+    <string name="delete">delete</string>
 </resources>

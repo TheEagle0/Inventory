@@ -9,7 +9,6 @@ public class Contract {
     }
 
     public static final class Product implements BaseColumns {
-        public static final String ID = BaseColumns._ID;
         public static final String TABLE_NAME = "product";
         public static final String PRODUCT_NAME = "product_name";
         public static final String PRICE = "PRICE";

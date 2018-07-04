@@ -137,7 +137,8 @@
         android:layout_margin="@dimen/dime_34dp"
         android:layout_marginTop="@dimen/dime_34dp"
         android:background="@drawable/shape"
-        android:text="@string/add"
         android:textSize="@dimen/dim_28sp"
-        android:textStyle="bold" />
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:padding="@dimen/dime_8dp"/>
 </RelativeLayout>

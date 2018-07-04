@@ -1,16 +1,16 @@
 package com.example.theeagle.inventory.ui;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
     private static final int LOADER_ID = 0;
     String[] projection = {
-            Product.ID,
+            Product._ID,
             Product.PRODUCT_NAME,
             Product.PRICE,
             Product.QUANTITY,
@@ -59,9 +59,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         textView = findViewById(R.id.text_view);
         floatingActionButton = findViewById(R.id.floating_btn);
-        RecyclerView recyclerView=findViewById(R.id.rv);
+        RecyclerView recyclerView = findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        InventoryAdapter adapter =new InventoryAdapter(this,dataList);
+        InventoryAdapter adapter = new InventoryAdapter(this, dataList);
         recyclerView.setAdapter(adapter);
         listeners();
     }
@@ -132,12 +132,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int quantity = cursor.getColumnIndexOrThrow(Product.QUANTITY);
                 int supplierName = cursor.getColumnIndexOrThrow(Product.SUPPLIER_NAME);
                 int supplierPhone = cursor.getColumnIndexOrThrow(Product.SUPPLIER_PHONE_NUMBER);
-
+                int id = cursor.getColumnIndexOrThrow(Product._ID);
                 productModel.setProductName(cursor.getString(productName));
                 productModel.setPrice(cursor.getDouble(price));
                 productModel.setQuantity(cursor.getInt(quantity));
                 productModel.setSupplierName(cursor.getString(supplierName));
                 productModel.setPhoneNumber(cursor.getString(supplierPhone));
+                productModel.setId(cursor.getInt(id));
                 dataList.add(productModel);
             }
             cursor.close();

@@ -5,6 +5,7 @@ public class ProductModel {
     private String ProductName, supplierName, phoneNumber;
     private int  quantity;
     private double price;
+    private int id;
 
     public ProductModel() {
     }
@@ -49,5 +50,12 @@ public class ProductModel {
         this.quantity = quantity;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
 

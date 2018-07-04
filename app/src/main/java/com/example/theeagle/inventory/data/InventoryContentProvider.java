@@ -1,6 +1,7 @@
 package com.example.theeagle.inventory.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -39,7 +40,7 @@ public class InventoryContentProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case PRODUCT_ID:
-                selection = Contract.Product.ID + "=?";
+                selection = Contract.Product._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 cursor = database.query(Contract.Product.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
@@ -47,7 +48,7 @@ public class InventoryContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown uri" + uri);
         }
-        cursor.setNotificationUri(getContext().getContentResolver(),uri);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
         return cursor;
     }
 
@@ -90,8 +91,9 @@ public class InventoryContentProvider extends ContentProvider {
                 return database.delete(Contract.Product.TABLE_NAME, selection, selectionArgs);
             case PRODUCT_ID:
                 // Delete a single row given by the ID in the URI
-                selection = Contract.Product.ID + "=?";
+                selection = Contract.Product._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                getContext().getContentResolver().notifyChange(uri, null);
                 return database.delete(Contract.Product.TABLE_NAME, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Deletion is not supported for " + uri);
@@ -106,7 +108,7 @@ public class InventoryContentProvider extends ContentProvider {
                 if (values != null)
                     return updateProduct(uri, values, selection, selectionArgs);
             case PRODUCT_ID:
-                selection = Contract.Product.ID + "=?";
+                selection = Contract.Product._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
                 if (values != null)
                     return updateProduct(uri, values, selection, selectionArgs);
@@ -122,7 +124,7 @@ public class InventoryContentProvider extends ContentProvider {
         if (id == -1) {
             return null;
         }
-        getContext().getContentResolver().notifyChange(uri,null);
+        getContext().getContentResolver().notifyChange(uri, null);
         return ContentUris.withAppendedId(uri, id);
     }
 
@@ -161,7 +163,7 @@ public class InventoryContentProvider extends ContentProvider {
             return 0;
         }
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
-
+        getContext().getContentResolver().notifyChange(uri, null);
         return database.update(Contract.Product.TABLE_NAME, contentValues, selection, selectionArgs);
     }
 

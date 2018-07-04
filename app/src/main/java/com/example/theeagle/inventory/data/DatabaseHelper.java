@@ -15,7 +15,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_CREATE_INVENTORY_TABLE = "CREATE TABLE " + Contract.Product.TABLE_NAME + "("
-                + Contract.Product.ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                + Contract.Product._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 Contract.Product.PRODUCT_NAME + " TEXT, " +
                 Contract.Product.PRICE + " REAL, " +
                 Contract.Product.QUANTITY + " INTEGER, " +

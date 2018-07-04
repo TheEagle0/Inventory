@@ -1,10 +1,15 @@
 package com.example.theeagle.inventory.ui;
 
+import android.annotation.SuppressLint;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -18,13 +23,35 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private Button addInfo;
     private ImageButton increase, decrease;
     private int quantity = 0;
+    private Uri currentUri;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
         initViews();
+        getData();
         listeners();
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void getData() {
+        intent = getIntent();
+        if (intent.hasExtra("name")) {
+            addInfo.setText("Update");
+            setTitle("Update Product");
+            productNameET.setText(intent.getStringExtra("name"));
+            priceET.setText((Double.toString(intent.getDoubleExtra("price", 0))));
+            quantityET.setText(Integer.toString(intent.getIntExtra("quantity", 0)));
+            supplierNameET.setText(intent.getStringExtra("supplier name"));
+            supplierPhoneNumberET.setText(intent.getStringExtra("phone"));
+            int id = intent.getIntExtra("id", 0);
+            currentUri = ContentUris.withAppendedId(Contract.Product.CONTENT_URI, id);
+        } else {
+            addInfo.setText("Add");
+            setTitle("Add Product");
+        }
     }
 
 
@@ -49,7 +76,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add:
-                insertProduct();
+                saveProduct();
                 break;
             case R.id.decrease_quantity:
                 String quantityDecrease = quantityET.getText().toString();
@@ -81,7 +108,27 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void insertProduct() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        deleteProduct();
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteProduct(){
+        int deletedId=getContentResolver().delete(currentUri,Contract.Product.TABLE_NAME,null);
+        if (deletedId==0){
+            Toast.makeText(this, "Date Still thier", Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this, "Data removed", Toast.LENGTH_SHORT).show();
+        }
+}
+    private void saveProduct() {
         ContentValues values = new ContentValues();
         String name = productNameET.getText().toString();
         String getPrice = priceET.getText().toString();
@@ -110,13 +157,22 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             supplierPhoneNumberET.setError("Please enter a valid phone number");
         }
 
-
-        Uri newUri = getContentResolver().insert(Contract.Product.CONTENT_URI, values);
-        if (newUri == null) {
-            Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+        if (intent.hasExtra("name")) {
+            int rowAffected = getContentResolver().update(currentUri, values, null, null);
+            if (rowAffected == 0) {
+                Toast.makeText(this, "No data changed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Data Updated", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
-            finish();
+
+            Uri newUri = getContentResolver().insert(Contract.Product.CONTENT_URI, values);
+            if (newUri == null) {
+                Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
 
     }
