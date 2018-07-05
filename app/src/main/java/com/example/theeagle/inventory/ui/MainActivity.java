@@ -1,8 +1,10 @@
 package com.example.theeagle.inventory.ui;
 
+import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -37,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Product.SUPPLIER_NAME,
             Product.SUPPLIER_PHONE_NUMBER
     };
-    private TextView textView;
     private FloatingActionButton floatingActionButton;
     private ArrayList<ProductModel> dataList;
 
@@ -57,12 +58,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void initViews() {
-        textView = findViewById(R.id.text_view);
+        TextView textView = findViewById(R.id.text_view);
         floatingActionButton = findViewById(R.id.floating_btn);
         RecyclerView recyclerView = findViewById(R.id.rv);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         InventoryAdapter adapter = new InventoryAdapter(this, dataList);
         recyclerView.setAdapter(adapter);
+        if (dataList.isEmpty()) {
+            textView.setText(R.string.empty_view_message);
+            textView.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.INVISIBLE);
+        }else {
+            recyclerView.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.INVISIBLE);
+        }
         listeners();
     }
 
@@ -79,9 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         values.put(Product.SUPPLIER_PHONE_NUMBER, "0125120235");
         Uri newUri = getContentResolver().insert(Product.CONTENT_URI, values);
         if (newUri == null) {
-            Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.insertion_faild, Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.data_inserted, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -92,8 +101,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        insertProduct();
+        switch (item.getItemId()) {
+            case R.id.option_insert:
+                insertProduct();
+                break;
+            case R.id.delete_all:
+                showDeleteConfirmationDialog();
+                break;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteAll() {
+        int rowsDeleted = getContentResolver().delete(Product.CONTENT_URI, null, null);
+        if (rowsDeleted == 0) {
+            Toast.makeText(this, R.string.data_notremoved, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.data_removed, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -151,4 +177,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
+
+    private void showDeleteConfirmationDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_message);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteAll();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 }

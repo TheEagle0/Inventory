@@ -8,7 +8,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATA_BASE_NAME = "inventory";
     private static final int DATABASE_VERSION = 1;
 
-    public DatabaseHelper(Context context) {
+     DatabaseHelper(Context context) {
         super(context, DATA_BASE_NAME, null, DATABASE_VERSION);
     }
 

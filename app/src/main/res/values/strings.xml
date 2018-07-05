@@ -12,4 +12,23 @@
     <string name="remove_btn">remove btn</string>
     <string name="add_btn">add btn</string>
     <string name="delete">delete</string>
+    <string name="delete_all_products">Delete All Products</string>
+    <string name="call_supplier">call supplier</string>
+    <string name="empty_field">Fields Shouldn\'t be Empty</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_message">Are you Sure you Want to delete the Data?</string>
+    <string name="update_not_supported">Update is not supported for</string>
+    <string name="insertion_notsupported">Insertion is not supported for</string>
+    <string name="delete_notsupported">Deletion is not supported for</string>
+    <string name="unkown_uri">Unknown uri</string>
+    <string name="with_match">with match</string>
+    <string name="data_inserted">Data Inserted</string>
+    <string name="insertion_faild">Insertion Failed</string>
+    <string name="data_updated">Data Updated</string>
+    <string name="data_not_updated">No data changed</string>
+    <string name="price_error">price must be more than0</string>
+    <string name="data_removed">Data removed</string>
+    <string name="data_notremoved">Date Still their</string>
+    <string name="empty_view_message">The Store Is Empty</string>
+    <string name="done">done</string>
 </resources>

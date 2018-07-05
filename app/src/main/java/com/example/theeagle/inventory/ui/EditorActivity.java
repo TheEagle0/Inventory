@@ -1,8 +1,10 @@
 package com.example.theeagle.inventory.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +22,6 @@ import com.example.theeagle.inventory.data.Contract;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
     private TextInputEditText productNameET, priceET, quantityET, supplierNameET, supplierPhoneNumberET;
-    private Button addInfo;
     private ImageButton increase, decrease;
     private int quantity = 0;
     private Uri currentUri;
@@ -39,7 +40,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private void getData() {
         intent = getIntent();
         if (intent.hasExtra("name")) {
-            addInfo.setText("Update");
             setTitle("Update Product");
             productNameET.setText(intent.getStringExtra("name"));
             priceET.setText((Double.toString(intent.getDoubleExtra("price", 0))));
@@ -49,7 +49,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             int id = intent.getIntExtra("id", 0);
             currentUri = ContentUris.withAppendedId(Contract.Product.CONTENT_URI, id);
         } else {
-            addInfo.setText("Add");
             setTitle("Add Product");
         }
     }
@@ -61,13 +60,11 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         quantityET = findViewById(R.id.quantity);
         supplierNameET = findViewById(R.id.supplier_name);
         supplierPhoneNumberET = findViewById(R.id.supplier_phone_number);
-        addInfo = findViewById(R.id.add);
         increase = findViewById(R.id.increase_quantity);
         decrease = findViewById(R.id.decrease_quantity);
     }
 
     private void listeners() {
-        addInfo.setOnClickListener(this);
         increase.setOnClickListener(this);
         decrease.setOnClickListener(this);
     }
@@ -116,18 +113,37 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        deleteProduct();
+        switch (item.getItemId()) {
+            case R.id.delete:
+                showDeleteConfirmationDialog();
+                break;
+            case R.id.call:
+                callSupplier(supplierPhoneNumberET.getText().toString());
+                break;
+            case R.id.done:
+                saveProduct();
+                break;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
-    private void deleteProduct(){
-        int deletedId=getContentResolver().delete(currentUri,Contract.Product.TABLE_NAME,null);
-        if (deletedId==0){
-            Toast.makeText(this, "Date Still thier", Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(this, "Data removed", Toast.LENGTH_SHORT).show();
+    private void callSupplier(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
+    }
+
+    private void deleteProduct() {
+        int deletedId = getContentResolver().delete(currentUri, Contract.Product.TABLE_NAME, null);
+        if (deletedId == 0) {
+            Toast.makeText(this, R.string.data_notremoved, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.data_removed, Toast.LENGTH_SHORT).show();
+            finish();
         }
-}
+    }
+
     private void saveProduct() {
         ContentValues values = new ContentValues();
         String name = productNameET.getText().toString();
@@ -143,37 +159,63 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 values.put(Contract.Product.PRICE, price);
 
             } else {
-                priceET.setError("price must be more than0");
+                priceET.setError(getString(R.string.price_error));
             }
             values.put(Contract.Product.SUPPLIER_NAME, supplierName);
             values.put(Contract.Product.SUPPLIER_PHONE_NUMBER, phoneNumber);
             quantity = Integer.parseInt(quantityMain);
             values.put(Contract.Product.QUANTITY, quantity);
         } else {
-            quantityET.setError("Please enter valid number");
-            productNameET.setError("Please enter a valid name");
-            priceET.setError("Please enter a valid price");
-            supplierNameET.setError("Please enter a valid name");
-            supplierPhoneNumberET.setError("Please enter a valid phone number");
+            Toast.makeText(this, R.string.empty_field, Toast.LENGTH_SHORT).show();
         }
 
         if (intent.hasExtra("name")) {
             int rowAffected = getContentResolver().update(currentUri, values, null, null);
             if (rowAffected == 0) {
-                Toast.makeText(this, "No data changed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.data_not_updated, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Data Updated", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.data_updated, Toast.LENGTH_SHORT).show();
             }
         } else {
 
             Uri newUri = getContentResolver().insert(Contract.Product.CONTENT_URI, values);
             if (newUri == null) {
-                Toast.makeText(this, "Insertion Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.insertion_faild, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Data Inserted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.data_inserted, Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
 
+    }
+
+    private void showDeleteConfirmationDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_message);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                deleteProduct();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (!intent.hasExtra("name")) {
+            MenuItem menuItem = menu.findItem(R.id.delete);
+            menuItem.setVisible(false);
+        }
+        return true;
     }
 }

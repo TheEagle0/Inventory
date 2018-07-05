@@ -22,7 +22,7 @@ public class Contract {
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_URI, INVENTORY_PATH);
         static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + AUTHORITY + "/" + INVENTORY_PATH;
-        public static final String CONTENT_ITEM_TYPE =
+        static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + AUTHORITY + "/" + INVENTORY_PATH;
 
 
